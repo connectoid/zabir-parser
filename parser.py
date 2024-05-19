@@ -125,8 +125,8 @@ def main():
         post_json['images'] = images
         count += 1
         print(f'{count}. Добавлен пост {post_json["title"]}')
-        if count >= max_posts:
-            break
+        # if count >= max_posts:
+        #     break
 
         result = create_post(post_json)
         time2 = datetime.now()
