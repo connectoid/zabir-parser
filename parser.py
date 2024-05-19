@@ -129,8 +129,8 @@ def main():
         #     break
 
         result = create_post(post_json)
-        time2 = datetime.now()
-        print(f'Время парсинга одной страницы: {time2 - time1}')
+    time2 = datetime.now()
+    print(f'Время парсинга одной страницы: {time2 - time1}')
 
 
 if __name__ == '__main__':
