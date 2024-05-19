@@ -38,7 +38,7 @@ def create_content(image_json):
     content = []
     for image in image_json:
         html_image_block = f"""
-        <figure>
+        <p>
             <a href={image['src']} target="_blank">
                 <picture style="padding-top:75%">
                     <img 
@@ -52,8 +52,8 @@ def create_content(image_json):
                     >
                 </picture>
             </a>
-        </figure>
         <span>{image['title']}</span>
+        </p>
         """
         content.append(html_image_block)
     content = (' ').join(content)
