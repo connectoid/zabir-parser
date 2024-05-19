@@ -3,6 +3,7 @@ from pprint import pprint
 import base64
 import os
 from random import shuffle
+from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
@@ -102,6 +103,7 @@ def get_images_from_post(url):
 
 
 def main():
+    time1 = datetime.now()
     count = 0
     max_posts = 50
     posts = []
@@ -127,6 +129,8 @@ def main():
             break
 
         result = create_post(post_json)
+        time2 = datetime.now()
+        print(f'Время парсинга одной страницы: {time2 - time1}')
 
 
 if __name__ == '__main__':
