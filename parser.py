@@ -52,8 +52,8 @@ def create_content(image_json):
                     >
                 </picture>
             </a>
-            <span>{image['title']}</span>
         </figure>
+        <span>{image['title']}</span>
         """
         content.append(html_image_block)
     content = (' ').join(content)
