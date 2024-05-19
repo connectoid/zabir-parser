@@ -4,6 +4,7 @@ import base64
 import os
 from random import shuffle
 from datetime import datetime
+import asyncio
 
 import requests
 from bs4 import BeautifulSoup
@@ -20,7 +21,7 @@ token = base64.b64encode(credentials.encode())
 header = {'Authorization': 'Basic ' + token.decode('utf-8')}
 
 
-def create_post(post_json):
+async def create_post(post_json):
     url = "https://eskant-foto.ru/wp-json/wp/v2/posts"
     content = create_content(post_json['images'])
     post = {
@@ -61,7 +62,7 @@ def create_content(image_json):
     return content
 
 
-def get_posts(url):
+async def get_posts(url):
     posts_list = []
     response = requests.get(url)
     if response.status_code == 200:
@@ -79,7 +80,7 @@ def get_posts(url):
         return False
     
 
-def get_images_from_post(url):
+async def get_images_from_post(url):
     images_list = []
     response = requests.get(url)
     if response.status_code == 200:
@@ -102,17 +103,17 @@ def get_images_from_post(url):
         return False
 
 
-def main():
+async def main():
     time1 = datetime.now()
     count = 0
     max_posts = 50
     posts = []
     post_json = {}
-    posts = get_posts(base_url)
+    posts = await get_posts(base_url)
     shuffle(posts)
     for post in posts:
         post_json['title'] = post['title']
-        images_list = get_images_from_post(post['url'])
+        images_list = await get_images_from_post(post['url'])
         shuffle(images_list)
         images = []
         for image in images_list:
@@ -128,10 +129,10 @@ def main():
         # if count >= max_posts:
         #     break
 
-        result = create_post(post_json)
+        result = await create_post(post_json)
     time2 = datetime.now()
     print(f'Время парсинга одной страницы: {time2 - time1}')
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
