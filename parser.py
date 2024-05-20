@@ -114,14 +114,14 @@ def main():
             current_index = pickle.load(f)
     else:
         current_index = last_page
-
+    print(f'Начинаем парсинг со страницы {current_index}')
     for page in range(current_index, 0, -1):
+        url = f'{base_url}/page/{page}/'
         time1 = datetime.now()
         count = 0
-        max_posts = 50
         posts = []
         post_json = {}
-        posts = get_posts(base_url)
+        posts = get_posts(url)
         shuffle(posts)
         for post in posts:
             post_json['title'] = post['title']
@@ -138,8 +138,6 @@ def main():
             post_json['images'] = images
             count += 1
             print(f'{count}. Добавлен пост {post_json["title"]}')
-            # if count >= max_posts:
-            #     break
 
             result = create_post(post_json)
         time2 = datetime.now()
