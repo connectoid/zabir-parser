@@ -142,7 +142,7 @@ def main():
         time2 = datetime.now()
         print(f'Время парсинга страницы {page}: {time2 - time1}')
         with open(state_file, 'wb') as f:
-            pickle.dump(str(page), f)
+            pickle.dump(page, f)
 
 
 
