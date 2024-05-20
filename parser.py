@@ -109,7 +109,7 @@ def get_images_from_post(url):
 
 def main():
     if os.path.exists(state_file):
-        with open(state_file, 'r') as f:
+        with open(state_file, 'rb') as f:
             current_index = pickle.load(f)
     else:
         current_index = last_page
@@ -141,7 +141,7 @@ def main():
             result = create_post(post_json)
         time2 = datetime.now()
         print(f'Время парсинга страницы {page}: {time2 - time1}')
-        with open(state_file, 'w') as f:
+        with open(state_file, 'wb') as f:
             pickle.dump(str(page), f)
 
 
