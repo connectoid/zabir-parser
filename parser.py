@@ -10,17 +10,16 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-base_url = 'https://zabir.ru'
-test_url = 'https://zabir.ru/past/simpl/pravila/5/klass/'
 
 load_dotenv()
 app_password = os.getenv('app_password')
+base_url = os.getenv('base_url')
 user = "poster"
 credentials = user + ':' + app_password
 token = base64.b64encode(credentials.encode())
 header = {'Authorization': 'Basic ' + token.decode('utf-8')}
 state_file = 'parser_state.dat'
-last_page = 100
+last_page = 978306
 
 
 def create_post(post_json):
@@ -110,7 +109,7 @@ def get_images_from_post(url):
 
 def main():
     if os.path.exists(state_file):
-        with open(state_file, 'rb') as f:
+        with open(state_file, 'r') as f:
             current_index = pickle.load(f)
     else:
         current_index = last_page
@@ -136,12 +135,13 @@ def main():
                 image_json['data-src'] = image['data-src']
                 images.append(image_json)
             post_json['images'] = images
+            count += 1
             print(f'{count}. Добавлен пост {post_json["title"]}')
 
             result = create_post(post_json)
         time2 = datetime.now()
         print(f'Время парсинга страницы {page}: {time2 - time1}')
-        with open(state_file, 'wb') as f:
+        with open(state_file, 'w') as f:
             pickle.dump(page, f)
 
 
