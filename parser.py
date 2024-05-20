@@ -136,14 +136,13 @@ def main():
                 image_json['data-src'] = image['data-src']
                 images.append(image_json)
             post_json['images'] = images
-            count += 1
             print(f'{count}. Добавлен пост {post_json["title"]}')
 
             result = create_post(post_json)
         time2 = datetime.now()
         print(f'Время парсинга страницы {page}: {time2 - time1}')
         with open(state_file, 'wb') as f:
-            pickle.dump(current_index, f)
+            pickle.dump(page, f)
 
 
 
