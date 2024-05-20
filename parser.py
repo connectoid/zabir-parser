@@ -2,6 +2,7 @@
 from pprint import pprint
 import base64
 import os
+import pickle
 from random import shuffle
 from datetime import datetime
 
@@ -18,6 +19,8 @@ user = "poster"
 credentials = user + ':' + app_password
 token = base64.b64encode(credentials.encode())
 header = {'Authorization': 'Basic ' + token.decode('utf-8')}
+state_file = 'parser_state.dat'
+last_page = 100
 
 
 def create_post(post_json):
@@ -106,34 +109,44 @@ def get_images_from_post(url):
 
 
 def main():
-    time1 = datetime.now()
-    count = 0
-    max_posts = 50
-    posts = []
-    post_json = {}
-    posts = get_posts(base_url)
-    shuffle(posts)
-    for post in posts:
-        post_json['title'] = post['title']
-        images_list = get_images_from_post(post['url'])
-        shuffle(images_list)
-        images = []
-        for image in images_list:
-            image_json = {}
-            image_json['title'] = image['title']
-            image_json['alt'] = image['alt']
-            image_json['src'] = image['src']
-            image_json['data-src'] = image['data-src']
-            images.append(image_json)
-        post_json['images'] = images
-        count += 1
-        print(f'{count}. Добавлен пост {post_json["title"]}')
-        # if count >= max_posts:
-        #     break
+    if os.path.exists(state_file):
+        with open(state_file, 'rb') as f:
+            current_index = pickle.load(f)
+    else:
+        current_index = last_page
 
-        result = create_post(post_json)
-    time2 = datetime.now()
-    print(f'Время парсинга одной страницы: {time2 - time1}')
+    for page in range(current_index, 0, -1):
+        time1 = datetime.now()
+        count = 0
+        max_posts = 50
+        posts = []
+        post_json = {}
+        posts = get_posts(base_url)
+        shuffle(posts)
+        for post in posts:
+            post_json['title'] = post['title']
+            images_list = get_images_from_post(post['url'])
+            shuffle(images_list)
+            images = []
+            for image in images_list:
+                image_json = {}
+                image_json['title'] = image['title']
+                image_json['alt'] = image['alt']
+                image_json['src'] = image['src']
+                image_json['data-src'] = image['data-src']
+                images.append(image_json)
+            post_json['images'] = images
+            count += 1
+            print(f'{count}. Добавлен пост {post_json["title"]}')
+            # if count >= max_posts:
+            #     break
+
+            result = create_post(post_json)
+        time2 = datetime.now()
+        print(f'Время парсинга страницы {page}: {time2 - time1}')
+        with open(state_file, 'wb') as f:
+            pickle.dump(current_index, f)
+
 
 
 if __name__ == '__main__':
